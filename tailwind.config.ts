@@ -47,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        transit: {
+          blue: "hsl(var(--transit-blue))",
+          "blue-light": "hsl(var(--transit-blue-light))",
+          green: "hsl(var(--transit-green))",
+          gray: "hsl(var(--transit-gray))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
