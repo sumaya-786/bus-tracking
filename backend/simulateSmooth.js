@@ -131,8 +131,8 @@ async function moveBusRealistic(bus) {
     }
 
     // Stop dwell time at first step of segment
-    if (step === 0 && Math.random() < 0.3) {
-      const dwell = 2 + Math.random() * 5; // 2–7s
+    if (step === 0) {
+      const dwell = 5 + Math.random() * 5; // 5–10s
       await new Promise((r) => setTimeout(r, dwell * 1000));
     }
 
