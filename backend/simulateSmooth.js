@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const Bus = require("./models/bus");
 const Stop = require("./models/stop");
-const Location = require("./models/location");
+const axios = require("axios"); // ✅ for sending updates to backend
 
 dotenv.config();
 
@@ -139,27 +139,27 @@ async function moveBusRealistic(bus) {
     // ETA calculation
     const etaSeconds = distanceRemaining / (currentSpeed || 1);
 
-    // Count buses on route
-    const activeBusesOnRoute = await Bus.countDocuments({
-      routeNo: bus.routeNo,
-    });
-
-    // Save to MongoDB
-    const location = new Location({
-      busId: bus.busId,
-      routeNo: bus.routeNo,
-      stopId: nextStop._id,
-      latitude: lat,
-      longitude: lon,
-      speed: currentSpeed,
-      distanceRemaining,
-      etaSeconds,
-      activeBusesOnRoute,
-      weather,
-      timestamp: new Date(),
-    });
-
-    await location.save();
+    // ✅ Send to backend (with busId + routeNo)
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/locations/${bus.busId}`,
+        {
+          busId: bus.busId,        // ✅ now included
+          routeNo: bus.routeNo,    // ✅ required by schema
+          latitude: lat,
+          longitude: lon,
+          speed: currentSpeed,
+          stopName: nextStop.stopName,
+          etaSeconds,
+        }
+      );
+      console.log("✅ Sent update to server:", response.data);
+    } catch (err) {
+      console.error(
+        "❌ Failed to send update:",
+        err.response?.data || err.message
+      );
+    }
 
     console.log(
       `🚌 Bus ${bus.busId} → ${lat.toFixed(5)}, ${lon.toFixed(
@@ -185,7 +185,7 @@ async function startSimulation() {
   if (!buses.length) return console.log("❌ No buses found to simulate");
 
   buses.forEach((bus) => {
-    const delay = Math.floor(Math.random() * 20000); // 0–20s stagger
+    const delay = Math.floor(Math.random() * 2000); // small stagger
     setTimeout(() => moveBusRealistic(bus), delay);
   });
 }
