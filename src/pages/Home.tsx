@@ -1,98 +1,178 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Navigation, Bus } from "lucide-react";
+import { Bus } from "lucide-react";
 
-const Home = () => {
-  const [startingPoint, setStartingPoint] = useState("");
-  const [destination, setDestination] = useState("");
+const Home: React.FC = () => {
+  const [startPoint, setStartPoint] = useState("Starting Point");
+  const [destination, setDestination] = useState("Destination");
+  const [error, setError] = useState(""); // ✅ Error state
   const navigate = useNavigate();
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 🚨 Validation checks
+    if (startPoint === "Starting Point" || destination === "Destination") {
+      setError("⚠ Please select both a starting point and a destination.");
+      return;
+    }
+
+    if (startPoint === destination) {
+      setError("⚠ Invalid: Starting point and destination cannot be the same.");
+      return;
+    }
+
+    setError(""); // clear previous error
+    console.log({ startPoint, destination });
+    navigate("/active-buses");
+  };
+
+  const handleSignOut = () => {
+    navigate("/");
+  };
+
+  // ⏳ Auto-hide error after 3s
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  const stops = [
+    { routeNo: 14, stopNo: 1, stopName: "Penamaluru Center" },
+    { routeNo: 14, stopNo: 2, stopName: "Sitapuram Colony" },
+    { routeNo: 14, stopNo: 3, stopName: "Poranki Center" },
+    { routeNo: 14, stopNo: 4, stopName: "Capital Hospital" },
+    { routeNo: 14, stopNo: 5, stopName: "Autonagar Gate" },
+    { routeNo: 14, stopNo: 6, stopName: "NTR Circle" },
+    { routeNo: 14, stopNo: 7, stopName: "Benz Circle" },
+    { routeNo: 14, stopNo: 8, stopName: "VIT-AP" },
+    { routeNo: 14, stopNo: 9, stopName: "Ganavaram" },
+    { routeNo: 14, stopNo: 10, stopName: "Ayush Hospital" },
+    { routeNo: 14, stopNo: 11, stopName: "Benz Circle (Second)" },
+    { routeNo: 14, stopNo: 12, stopName: "VIT-AP (Second)" },
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-accent text-white p-4 shadow-lg">
-        <div className="flex items-center gap-3">
-          <Bus className="w-8 h-8" />
-          <div>
-            <h1 className="text-xl font-bold">BusTracker</h1>
-            <p className="text-white/80 text-sm">Find your perfect route</p>
+    <div className="min-h-screen bg-gray-100 relative">
+      {/* 🚨 Popup Message */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.4 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 bg-yellow-100 text-yellow-800 px-6 py-3 rounded-lg shadow-lg font-medium text-center z-50"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Navigation Bar */}
+      <motion.nav
+        className="bg-red-600 shadow-md"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-white font-bold text-xl flex items-center gap-2">
+              <Bus className="w-6 h-6" /> Bus Monitor / బస్ మానిటర్
+            </h1>
+
+            <motion.button
+              onClick={handleSignOut}
+              className="text-white font-bold text-lg px-6 py-2 rounded hover:bg-red-700 transition-colors duration-300 shadow-md"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Sign Out / సైన్ అవుట్
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.nav>
 
-      <div className="p-4 space-y-6">
-        {/* Search Section */}
-        <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/50">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Navigation className="w-5 h-5 text-primary" />
-              Plan Your Journey
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">From</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-transit-green" />
-                <Input
-                  type="text"
-                  placeholder="Starting Bus Stand"
-                  value={startingPoint}
-                  onChange={(e) => setStartingPoint(e.target.value)}
-                  className="pl-10 h-12 text-base border-border/50 focus:border-transit-green"
-                />
-              </div>
-            </div>
+      {/* Main Content */}
+      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)] py-12">
+        <motion.div
+          className="bg-red-500 p-8 rounded-2xl shadow-2xl w-full max-w-lg relative overflow-hidden"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          {/* Bus Animation */}
+          <motion.div
+            className="absolute top-4 left-0 w-full"
+            animate={{ x: ["-10%", "100%"] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+          >
+            <Bus className="w-8 h-8 text-white drop-shadow-lg" />
+          </motion.div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">To</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-destructive" />
-                <Input
-                  type="text"
-                  placeholder="Destination Bus Stand"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  className="pl-10 h-12 text-base border-border/50 focus:border-destructive"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Monitor Location Button */}
-        <Card className="shadow-lg border-0">
-          <CardContent className="p-6">
-            <Button 
-              onClick={() => navigate("/monitor")}
-              className="w-full h-14 text-lg font-medium bg-gradient-to-r from-accent to-transit-green hover:from-accent/90 hover:to-transit-green/90 shadow-lg"
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6 mt-12">
+            {/* Starting Point */}
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              <Navigation className="w-6 h-6 mr-2" />
-              Monitor Location
-            </Button>
-          </CardContent>
-        </Card>
+              <select
+                value={startPoint}
+                onChange={(e) => setStartPoint(e.target.value)}
+                aria-label="Starting Point"
+                className="w-full px-6 py-4 text-lg rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-red-300 text-gray-700 appearance-none bg-white cursor-pointer shadow-lg transition-all duration-200 hover:shadow-xl"
+              >
+                <option value="Starting Point">Starting Point / ప్రారంభ స్థానం</option>
+                {stops.map((stop) => (
+                  <option key={stop.stopNo} value={stop.stopName}>
+                    {stop.stopName}
+                  </option>
+                ))}
+              </select>
+            </motion.div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card className="shadow-md border-0 hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 text-center">
-              <Bus className="w-8 h-8 text-primary mx-auto mb-2" />
-              <p className="text-sm font-medium">Live Tracking</p>
-              <p className="text-xs text-muted-foreground">Real-time updates</p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-md border-0 hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 text-center">
-              <MapPin className="w-8 h-8 text-accent mx-auto mb-2" />
-              <p className="text-sm font-medium">Nearby Stops</p>
-              <p className="text-xs text-muted-foreground">Find closest stops</p>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Destination */}
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <select
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                aria-label="Destination"
+                className="w-full px-6 py-4 text-lg rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-red-300 text-gray-700 appearance-none bg-white cursor-pointer shadow-lg transition-all duration-200 hover:shadow-xl"
+              >
+                <option value="Destination">Destination / గమ్యం</option>
+                {stops.map((stop) => (
+                  <option key={stop.stopNo} value={stop.stopName}>
+                    {stop.stopName}
+                  </option>
+                ))}
+              </select>
+            </motion.div>
+
+            {/* Submit Button */}
+            <motion.div className="pt-4">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05, backgroundColor: "#b91c1c" }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full bg-red-600 text-white font-medium py-4 px-6 rounded-xl shadow-lg text-lg transition-all duration-200 hover:shadow-xl"
+              >
+                Submit
+              </motion.button>
+            </motion.div>
+          </form>
+        </motion.div>
       </div>
     </div>
   );
