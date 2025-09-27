@@ -1,152 +1,335 @@
+// seeds.js
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const Bus = require("./models/bus");
-const Stop = require("./models/stop");
-const Location = require("./models/location");
 
 dotenv.config();
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log("✅ MongoDB Connected");
+const Route = require("./models/route");
+const Bus = require("./models/bus");
+const Location = require("./models/location");
 
-    // --- Clear existing data ---
+async function seed() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    console.log("✅ Connected to MongoDB");
+
+    // Clear existing data
+    await Route.deleteMany({});
     await Bus.deleteMany({});
-    await Stop.deleteMany({});
     await Location.deleteMany({});
 
-    // --- Add Route 14 ---
-    const buses14 = await Bus.insertMany([
-      { busId: "BUS101", routeNo: 14, driverName: "John Doe" },
-      { busId: "BUS102", routeNo: 14, driverName: "Jane Doe" },
+    // -------------------------
+    // ROUTES
+    // -------------------------
+    const route15A = await Route.create({
+      routeNo: 15,
+      variant: "A",
+      startPoint: "IBRAHIMPATNAM",
+      endPoint: "PORANKI",
+      stops: [
+        {
+          stopNo: 1,
+          stopName: "IBRAHIMPATNAM",
+          latitude: 16.521,
+          longitude: 80.611,
+          order: 1,
+        },
+        {
+          stopNo: 2,
+          stopName: "SWATHI",
+          latitude: 16.524,
+          longitude: 80.619,
+          order: 2,
+        },
+        {
+          stopNo: 3,
+          stopName: "KUMMARI PALEM",
+          latitude: 16.529,
+          longitude: 80.627,
+          order: 3,
+        },
+        {
+          stopNo: 4,
+          stopName: "KR MARKET",
+          latitude: 16.531,
+          longitude: 80.635,
+          order: 4,
+        },
+        {
+          stopNo: 5,
+          stopName: "RAILWAY STN",
+          latitude: 16.541,
+          longitude: 80.637,
+          order: 5,
+        },
+        {
+          stopNo: 6,
+          stopName: "BENZ CIRCLE",
+          latitude: 16.544,
+          longitude: 80.648,
+          order: 6,
+        },
+        {
+          stopNo: 7,
+          stopName: "PATAMATA",
+          latitude: 16.547,
+          longitude: 80.655,
+          order: 7,
+        },
+        {
+          stopNo: 8,
+          stopName: "AUTONAGAR GATE",
+          latitude: 16.553,
+          longitude: 80.662,
+          order: 8,
+        },
+        {
+          stopNo: 9,
+          stopName: "KAMAYYATHOPU",
+          latitude: 16.559,
+          longitude: 80.669,
+          order: 9,
+        },
+        {
+          stopNo: 10,
+          stopName: "PORANKI",
+          latitude: 16.563,
+          longitude: 80.675,
+          order: 10,
+        },
+      ],
+      totalDistance: 25,
+      expectedDuration: 60,
+    });
+
+    const route15B = await Route.create({
+      routeNo: 15,
+      variant: "B",
+      startPoint: "IBRAHIMPATNAM",
+      endPoint: "PORANKI",
+      stops: [
+        {
+          stopNo: 1,
+          stopName: "IBRAHIMPATNAM",
+          latitude: 16.521,
+          longitude: 80.611,
+          order: 1,
+        },
+        {
+          stopNo: 2,
+          stopName: "SWATHI",
+          latitude: 16.524,
+          longitude: 80.619,
+          order: 2,
+        },
+        {
+          stopNo: 3,
+          stopName: "KUMMARI PALEM",
+          latitude: 16.529,
+          longitude: 80.627,
+          order: 3,
+        },
+        {
+          stopNo: 4,
+          stopName: "BUNDAR ROAD",
+          latitude: 16.532,
+          longitude: 80.641,
+          order: 4,
+        },
+        {
+          stopNo: 5,
+          stopName: "IGMC STADIUM",
+          latitude: 16.537,
+          longitude: 80.645,
+          order: 5,
+        },
+        {
+          stopNo: 6,
+          stopName: "BENZ CIRCLE",
+          latitude: 16.544,
+          longitude: 80.648,
+          order: 6,
+        },
+        {
+          stopNo: 7,
+          stopName: "PATAMATA",
+          latitude: 16.547,
+          longitude: 80.655,
+          order: 7,
+        },
+        {
+          stopNo: 8,
+          stopName: "AUTONAGAR GATE",
+          latitude: 16.553,
+          longitude: 80.662,
+          order: 8,
+        },
+        {
+          stopNo: 9,
+          stopName: "KAMAYYATHOPU",
+          latitude: 16.559,
+          longitude: 80.669,
+          order: 9,
+        },
+        {
+          stopNo: 10,
+          stopName: "PORANKI",
+          latitude: 16.563,
+          longitude: 80.675,
+          order: 10,
+        },
+      ],
+      totalDistance: 27,
+      expectedDuration: 65,
+    });
+
+    const route1G = await Route.create({
+      routeNo: 1,
+      variant: "G",
+      startPoint: "GOLLAPUDI",
+      endPoint: "KANKIPADU",
+      stops: [
+        {
+          stopNo: 1,
+          stopName: "GOLLAPUDI",
+          latitude: 16.534,
+          longitude: 80.573,
+          order: 1,
+        },
+        {
+          stopNo: 2,
+          stopName: "KUMMARI PALEM",
+          latitude: 16.529,
+          longitude: 80.627,
+          order: 2,
+        },
+        {
+          stopNo: 3,
+          stopName: "KR MARKET",
+          latitude: 16.531,
+          longitude: 80.635,
+          order: 3,
+        },
+        {
+          stopNo: 4,
+          stopName: "BENZ CIRCLE",
+          latitude: 16.544,
+          longitude: 80.648,
+          order: 4,
+        },
+        {
+          stopNo: 5,
+          stopName: "PATAMATA",
+          latitude: 16.547,
+          longitude: 80.655,
+          order: 5,
+        },
+        {
+          stopNo: 6,
+          stopName: "KANKIPADU",
+          latitude: 16.489,
+          longitude: 80.719,
+          order: 6,
+        },
+      ],
+      totalDistance: 22,
+      expectedDuration: 55,
+    });
+
+    const route5A = await Route.create({
+      routeNo: 5,
+      variant: "A",
+      startPoint: "AUTONAGAR",
+      endPoint: "PENAMALURU",
+      stops: [
+        {
+          stopNo: 1,
+          stopName: "AUTONAGAR",
+          latitude: 16.553,
+          longitude: 80.662,
+          order: 1,
+        },
+        {
+          stopNo: 2,
+          stopName: "PORANKI",
+          latitude: 16.563,
+          longitude: 80.675,
+          order: 2,
+        },
+        {
+          stopNo: 3,
+          stopName: "PATAMATA",
+          latitude: 16.547,
+          longitude: 80.655,
+          order: 3,
+        },
+        {
+          stopNo: 4,
+          stopName: "PENAMALURU",
+          latitude: 16.497,
+          longitude: 80.697,
+          order: 4,
+        },
+      ],
+      totalDistance: 18,
+      expectedDuration: 40,
+    });
+
+    // -------------------------
+    // BUSES
+    // -------------------------
+    const buses = await Bus.insertMany([
+      { busId: "BUS201", routeId: route15A._id, driverName: "Ravi" },
+      { busId: "BUS202", routeId: route15A._id, driverName: "Suresh" },
+      { busId: "BUS203", routeId: route15B._id, driverName: "Anil" },
+      { busId: "BUS204", routeId: route15B._id, driverName: "Kiran" },
+      { busId: "BUS301", routeId: route1G._id, driverName: "Ramesh" },
+      { busId: "BUS302", routeId: route1G._id, driverName: "Ajay" },
+      { busId: "BUS401", routeId: route5A._id, driverName: "Naresh" },
+      { busId: "BUS402", routeId: route5A._id, driverName: "Mahesh" },
     ]);
 
-    const stops14 = await Stop.insertMany([
-      {
-        routeNo: 14,
-        stopNo: 1,
-        stopName: "Penamaluru Center",
-        latitude: 16.511,
-        longitude: 80.7464,
-      },
-      {
-        routeNo: 14,
-        stopNo: 2,
-        stopName: "Sitapuram Colony",
-        latitude: 16.4759,
-        longitude: 80.6966,
-      },
-      {
-        routeNo: 14,
-        stopNo: 3,
-        stopName: "Poranki Center",
-        latitude: 16.4762,
-        longitude: 80.7067,
-      },
-      {
-        routeNo: 14,
-        stopNo: 4,
-        stopName: "Capital Hospital",
-        latitude: 16.489,
-        longitude: 80.705,
-      },
-    ]);
+    // -------------------------
+    // SEED INITIAL LOCATIONS
+    // -------------------------
+    for (const bus of buses) {
+      const route = await Route.findById(bus.routeId);
+      const firstStop = route.stops[0];
 
-    // --- Add Route 15 ---
-    const buses15 = await Bus.insertMany([
-      { busId: "BUS201", routeNo: 15, driverName: "Ravi" },
-      { busId: "BUS202", routeNo: 15, driverName: "Anil" },
-    ]);
+      // Count buses on same route
+      const busesOnSameRoute = buses.filter(
+        (b) => b.routeId.toString() === bus.routeId.toString()
+      ).length;
 
-    const stops15 = await Stop.insertMany([
-      {
-        routeNo: 15,
-        stopNo: 1,
-        stopName: "Autonagar Gate",
-        latitude: 16.499819,
-        longitude: 80.6729,
-      },
-      {
-        routeNo: 15,
-        stopNo: 2,
-        stopName: "NTR Circle",
-        latitude: 16.4965,
-        longitude: 80.6581,
-      },
-      {
-        routeNo: 15,
-        stopNo: 3,
-        stopName: "Benz Circle",
-        latitude: 16.4997,
-        longitude: 80.6581,
-      },
-      {
-        routeNo: 15,
-        stopNo: 4,
-        stopName: "VIT-AP",
-        latitude: 16.5273,
-        longitude: 80.6254,
-      },
-    ]);
-
-    // --- Add Route 16 ---
-    const buses16 = await Bus.insertMany([
-      { busId: "BUS301", routeNo: 16, driverName: "Prasad" },
-      { busId: "BUS302", routeNo: 16, driverName: "Latha" },
-    ]);
-
-    const stops16 = await Stop.insertMany([
-      {
-        routeNo: 16,
-        stopNo: 1,
-        stopName: "Ganavaram",
-        latitude: 16.5385,
-        longitude: 80.7771,
-      },
-      {
-        routeNo: 16,
-        stopNo: 2,
-        stopName: "Ayush Hospital",
-        latitude: 16.5177,
-        longitude: 80.6762,
-      },
-      {
-        routeNo: 16,
-        stopNo: 3,
-        stopName: "Benz Circle",
-        latitude: 16.4997,
-        longitude: 80.6581,
-      },
-      {
-        routeNo: 16,
-        stopNo: 4,
-        stopName: "VIT-AP",
-        latitude: 16.5273,
-        longitude: 80.6254,
-      },
-    ]);
-
-    // --- Add initial locations ---
-    const allBuses = [...buses14, ...buses15, ...buses16];
-    const allStops = [...stops14, ...stops15, ...stops16];
-
-    const initialLocations = allBuses.map((bus) => {
-      const firstStop = allStops.find(
-        (s) => s.routeNo === bus.routeNo && s.stopNo === 1
-      );
-      return {
+      await Location.create({
         busId: bus.busId,
-        routeNo: bus.routeNo,
+        routeId: bus.routeId,
+        routeNo: route.routeNo,
+        variantId: route.variant,
         stopId: firstStop._id,
         latitude: firstStop.latitude,
         longitude: firstStop.longitude,
-      };
-    });
+        speed: 0,
+        distanceRemaining: 0,
+        etaSeconds: 0,
+        activeBusesOnRoute: busesOnSameRoute,
+        weather: "clear",
+        timestamp: new Date(),
+      });
+    }
 
-    await Location.insertMany(initialLocations);
+    console.log(
+      "✅ Database seeded successfully with Routes, Buses, and Locations"
+    );
+    process.exit(0);
+  } catch (err) {
+    console.error("❌ Error seeding database:", err);
+    process.exit(1);
+  }
+}
 
-    console.log("✅ Seed Data Inserted Successfully");
-    mongoose.connection.close();
-  })
-  .catch((err) => console.log("❌ Error:", err));
+seed();
