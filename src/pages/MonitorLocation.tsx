@@ -1,17 +1,10 @@
-// App.js
-import React, { useEffect, useState } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Polyline
-} from "react-leaflet";
-import { useNavigate } from "react-router-dom"; // ✅ navigation
+import React from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useNavigate } from "react-router-dom"; // ✅ import useNavigate
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Fix leaflet default icons
+// Fix Leaflet default icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -19,43 +12,24 @@ L.Icon.Default.mergeOptions({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
   shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png"
-});
-
-// Custom Bus Icon for Map
-const busIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/61/61231.png",
-  iconSize: [30, 30]
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 export default function App() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // ✅ initialize navigate
 
-  // Stops Data
   const stops = [
-    { name: "Source", eta: "ETA: 0 min", distance: "0 km", color: "green", pos: [16.499819, 80.6729] },
-    { name: "Stop 1", eta: "ETA: N/A", distance: "N/A", color: "yellow", pos: [16.4965, 80.6581] },
-    { name: "Stop 2", eta: "ETA: N/A", distance: "N/A", color: "yellow", pos: [16.4997, 80.6581] },
-    { name: "Stop 3", eta: "ETA: N/A", distance: "N/A", color: "yellow", pos: [16.5177, 80.6762] },
-    { name: "Stop 4", eta: "ETA: N/A", distance: "N/A", color: "yellow", pos: [16.511, 80.7464] },
-    { name: "Destination", eta: "ETA: N/A", distance: "N/A", color: "red", pos: [16.5273, 80.6254] }
+    { name: "NTR Circle", eta: "ETA: 0 min", distance: "0 km", color: "green", pos: [16.499819, 80.6729] },
+    { name: "Inner Ring Road", eta: "ETA: 1 min", distance: "Arriving soon", color: "yellow", pos: [16.4965, 80.6581] },
+    { name: "Pedakakani (Your Stop/మీ స్టాప్)", eta: "ETA: 15 min", distance: "7 km", color: "yellow", pos: [16.4997, 80.6581] },
+    { name: "Mangalagiri", eta: "ETA: 21 min", distance: "11 km", color: "yellow", pos: [16.5177, 80.6762] },
+    { name: "Krishnayapalem", eta: "ETA: 17 min", distance: "9 km", color: "yellow", pos: [16.511, 80.7464] },
+    { name: "VIT-AP", eta: "ETA: 10 min", distance: "6 km", color: "red", pos: [16.5273, 80.6254] },
   ];
-
-  const path = stops.map((s) => s.pos);
-
-  // ✅ Animated bus state
-  const [busIndex, setBusIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBusIndex((prev) => (prev < stops.length - 1 ? prev + 1 : 0));
-    }, 3000); // moves every 3s
-    return () => clearInterval(interval);
-  }, [stops.length]);
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif", height: "100vh" }}>
-      {/* Top Navbar */}
+      {/* Navbar */}
       <div
         style={{
           backgroundColor: "#b30000",
@@ -63,37 +37,40 @@ export default function App() {
           padding: "10px 20px",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/Home")}
-        >
-          Home / హోమ్
-        </span>
-        <span>Monitor Location / మానిటర్ లొకేషన్</span>
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/SignIn")}
-        >
-          Sign Out / సైన్ అవుట్
-        </span>
+        {/* Left */}
+        <div style={{ flex: 1, textAlign: "left" }}>
+          <span style={{ cursor: "pointer" }} onClick={() => navigate("/home")}>
+            Home / హోమ్
+          </span>
+        </div>
+
+        {/* Center */}
+        <div style={{ flex: 1, textAlign: "center" }}>
+          <span style={{ cursor: "pointer" }}>Monitor Location / మానిటర్ లొకేషన్</span>
+        </div>
+
+        {/* Right */}
+        <div style={{ flex: 1, textAlign: "right" }}>
+          <span style={{ cursor: "pointer" }} onClick={() => navigate("/signin")}>
+            Sign Out / సైన్ అవుట్
+          </span>
+        </div>
       </div>
 
-      {/* Layout */}
+      {/* Stops Timeline */}
       <div style={{ display: "flex", height: "calc(100% - 90px)" }}>
-        {/* Stops timeline */}
         <div
           style={{
             width: "250px",
             padding: "20px",
             backgroundColor: "#f8f8f8",
             borderRight: "1px solid #ddd",
-            position: "relative"
+            position: "relative",
           }}
         >
-          {/* Vertical line */}
           <div
             style={{
               position: "absolute",
@@ -101,7 +78,7 @@ export default function App() {
               top: "30px",
               bottom: "30px",
               width: "2px",
-              backgroundColor: "#ccc"
+              backgroundColor: "#ccc",
             }}
           />
           {stops.map((stop, i) => (
@@ -111,7 +88,7 @@ export default function App() {
                 display: "flex",
                 alignItems: "flex-start",
                 marginBottom: "30px",
-                position: "relative"
+                position: "relative",
               }}
             >
               <div
@@ -122,21 +99,19 @@ export default function App() {
                   backgroundColor: stop.color,
                   marginRight: "15px",
                   zIndex: 1,
-                  position: "relative"
+                  position: "relative",
                 }}
               >
-                {/* 🚍 bus icon above current stop */}
-                {busIndex === i && (
+                {stop.name === "Inner Ring Road" && (
                   <span
                     style={{
                       position: "absolute",
                       top: "-25px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      fontSize: "20px"
+                      left: "-10px",
+                      fontSize: "20px",
                     }}
                   >
-                    🚍
+                    🚌
                   </span>
                 )}
               </div>
@@ -149,10 +124,9 @@ export default function App() {
           ))}
         </div>
 
-        {/* Right side */}
-        <div style={{ flex: "1", display: "flex", flexDirection: "column" }}>
-          {/* Map */}
-          <div style={{ flex: "1", margin: "15px" }}>
+        {/* Map */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{ flex: 1, margin: "15px" }}>
             <MapContainer
               center={[16.4997, 80.6581]}
               zoom={12}
@@ -162,6 +136,7 @@ export default function App() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; OpenStreetMap contributors"
               />
+
               {stops.map((stop, i) => (
                 <Marker key={i} position={stop.pos}>
                   <Popup>
@@ -169,16 +144,10 @@ export default function App() {
                   </Popup>
                 </Marker>
               ))}
-              {/* Polyline path */}
-              <Polyline positions={path} color="blue" />
-              {/* Animated bus marker on map */}
-              <Marker position={stops[busIndex].pos} icon={busIcon}>
-                <Popup>Bus currently at {stops[busIndex].name}</Popup>
-              </Marker>
             </MapContainer>
           </div>
 
-          {/* Notification below map */}
+          {/* Notification */}
           <div
             style={{
               margin: "15px",
@@ -187,11 +156,10 @@ export default function App() {
               borderRadius: "8px",
               fontWeight: "bold",
               color: "darkred",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
-            "Approaching Stop 4. Expecting a frequency of 8 buses in the
-            upcoming 15 minutes in Route 15."
+            "Approaching Inner Ring Road. Expecting a frequency of 3 buses in the upcoming 15 minutes in Route 15."
           </div>
         </div>
       </div>
@@ -202,7 +170,7 @@ export default function App() {
           textAlign: "center",
           padding: "10px",
           fontSize: "14px",
-          borderTop: "1px solid #ddd"
+          borderTop: "1px solid #ddd",
         }}
       >
         ETA will be sent to your mobile number / మీ మొబైల్ నంబర్‌కి ETA పంపబడుతుంది

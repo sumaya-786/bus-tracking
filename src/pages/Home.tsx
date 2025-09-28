@@ -52,7 +52,7 @@ const Home: React.FC = () => {
     { routeNo: 14, stopNo: 9, stopName: "Ganavaram" },
     { routeNo: 14, stopNo: 10, stopName: "Ayush Hospital" },
     { routeNo: 14, stopNo: 11, stopName: "Benz Circle (Second)" },
-    { routeNo: 14, stopNo: 12, stopName: "VIT-AP (Second)" },
+    { routeNo: 14, stopNo: 12, stopName: "Pedakakani" },
   ];
 
   return (

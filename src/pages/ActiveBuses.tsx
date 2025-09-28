@@ -31,7 +31,7 @@ export default function ActiveBuses() {
   const initialBuses = [
     {
       bus: "15A",
-      source: "Autonagar Gate",
+      source: "NTR Circle",
       destination: "VIT-AP",
       eta: "5 min",
       path: [
@@ -44,7 +44,7 @@ export default function ActiveBuses() {
       status: "Arriving", // 🚍 Blinking
     },
     {
-      bus: "15A", // ✅ Same bus number but different path
+      bus: "15B", // ✅ Same bus number but different path
       source: "Benz Circle",
       destination: "VIT-AP",
       eta: "7 min",
